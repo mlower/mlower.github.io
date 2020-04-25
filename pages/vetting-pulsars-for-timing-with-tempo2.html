@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Vetting Pulsars for Timing with TEMPO2 - Marcus Lower</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="../images/favicon.png" rel="icon">
+
+<link rel="canonical" href="../pages/vetting-pulsars-for-timing-with-tempo2.html">
+
+        <meta name="author" content="Marcus Lower" />
+        <meta name="description" content="Getting to the data Log onto the head node of the Green II supercomputer by ssh: ssh -Y [your-username]@g2.hpc.swin.edu.au Switch to one of the interactive nodes (gstar001, gstar002, sstar001, sstar002, or sstar003) by ssh-ing onto it: ssh -Y gstar002 From here we can go to …" />
+
+    <meta property="og:site_name" content="Marcus Lower" />
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="Vetting Pulsars for Timing with TEMPO2"/>
+    <meta property="og:url" content="../pages/vetting-pulsars-for-timing-with-tempo2.html"/>
+    <meta property="og:description" content="Getting to the data Log onto the head node of the Green II supercomputer by ssh: ssh -Y [your-username]@g2.hpc.swin.edu.au Switch to one of the interactive nodes (gstar001, gstar002, sstar001, sstar002, or sstar003) by ssh-ing onto it: ssh -Y gstar002 From here we can go to …" />
+
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="../theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="../theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="../theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="../theme/css/style.css" type="text/css"/>
+
+        <link href="../feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Marcus Lower ATOM Feed"/>
+
+
+
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="../" class="navbar-brand">
+Marcus Lower            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="../pages/cv.html">
+                             CV
+                          </a></li>
+                         <li><a href="../pages/my-research.html">
+                             My Research
+                          </a></li>
+                         <li><a href="../pages/publications.html">
+                             Publications
+                          </a></li>
+                         <li><a href="../pages/resources.html">
+                             Resources
+                          </a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<!-- Banner -->
+<style>
+	#banner{
+	    background-image:url("../images/Molonglo.png");
+	}
+</style>
+
+<div id="banner">
+	<div class="container">
+		<div class="copy">
+			<h1>Marcus Lower</h1>
+				<p class="intro">BSc Hons (Astrophysics)</p>
+		</div>
+	</div>
+</div><!-- End Banner -->
+
+<!-- Content Container -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content" class="body">
+        <h1 class="entry-title">Vetting Pulsars for Timing with TEMPO2</h1>
+        
+        <div class="entry-content">
+            <h2>Getting to the data</h2>
+<p>Log onto the head node of the Green II supercomputer by ssh:
+ssh -Y [your-username]@g2.hpc.swin.edu.au
+Switch to one of the interactive nodes (gstar001, gstar002, sstar001, sstar002, or sstar003) by ssh-ing onto it:</p>
+<div class="highlight"><pre><span></span>ssh -Y gstar002
+</pre></div>
+
+
+<p>From here we can go to the directory where the pulsar data is stored:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> /lustre/projects/p002_swin/your_directory/timing/utmost/
+</pre></div>
+
+
+<p>Simply typing ls -l will show all of the pulsars which have observations. To find a dataset that has a file size within some constraints, we can add the following to the ls -l command:</p>
+<div class="highlight"><pre><span></span>ls -l <span class="p">|</span> awk ‘<span class="o">{</span><span class="k">if</span> <span class="o">(</span><span class="nv">$5</span> &gt; <span class="m">40000</span> <span class="o">&amp;&amp;</span> &lt; <span class="m">100000</span><span class="o">)</span> print <span class="nv">$9</span><span class="o">}</span>’
+</pre></div>
+
+
+<p>Where $5 is the 5th column from the output of ls -l (directory size), and the $9 after the print statement gives the name of the directory.</p>
+<h2>Visually inspecting data</h2>
+<p>Going into one of these directories, we find data files with three different file types:
+<code>*.T</code> have been “scrunched” in time. <code>*.F</code> have been “scrunched” in frequency. <code>*.FT</code> have been “scrunched” in both frequency and time.
+We can use psrplot (one of PSRCHIVE’s programs) to take a look at the flux of the pulse profile of an observation as:</p>
+<div class="highlight"><pre><span></span>psrplot -p flux *.FT
+</pre></div>
+
+
+<p>There is also a file which ends in <code>.std</code>. This file is a standard template/model which has been created for this particular pulsar. It can be plotted using the previous command by replacing <code>*.FT</code> with <code>*.std</code>.</p>
+<p>We can also look at the de-dispersed spectrogram and pulse profile by using <code>pdmp</code>, which finds the optimal dispersion measure and pulsar period:</p>
+<div class="highlight"><pre><span></span>pdmp *.T
+</pre></div>
+
+
+<p>This opens 4 plots in addition to the metadata of the data file. These plots include (from the top): dispersion measure as a function of delta period, elapsed time as a function of pulse phase, phase vs. frequency and power as a function of time.</p>
+<p>The spectrograms occasionally have horizontal lines in them, which corresponds to where some radio-frequency interference or RFI (likely originating from a mobile phone near the telescope) has been removed.</p>
+<p>Good pulsar observations will have relatively clear pulse peaks in the pulse profiles, and should show up clearly in the de-dispersed spectrograms.</p>
+<h2>Making a timing file</h2>
+<p>Now we want to make a timing file. These contain the timing residuals leftover after subtracting the template from the data, and are used by <code>tempo2</code> to assist in vetting pulsars for timing. To make the <code>.tim</code> file (which we’ll call <code>name.tim</code>) we use <code>pat</code> and <code>tempo2</code> as:</p>
+<div class="highlight"><pre><span></span>pat -s *std -f tempo2 *.FT &gt; name.tim
+</pre></div>
+
+
+<p>After this, there’s one more step we need to do before we look at the timing residuals.</p>
+<h2>Making a parameters file</h2>
+<p>On occasion the ephemeris of the existing .par file is not ideal (or one doesn’t exist yet). We can rip either get the ephemeris of the pulsar from the pulsar catalog:</p>
+<div class="highlight"><pre><span></span>psrcat -E psr_name &gt; cat.par
+</pre></div>
+
+
+<p>or we can rip it from the latest observation by using both vap and grep:</p>
+<div class="highlight"><pre><span></span>vap -E YYYY-MM-DD-hh:mm:ss.clean.FT <span class="p">|</span> <span class="o">(</span>grep -v FINISH<span class="o">)</span> &gt; name.par
+</pre></div>
+
+
+<p>Once we have a .par file we can take a look at the timing residuals.
+If need be, the ephemerides contained within this .par file can then be applied to all of the frequency scrunched files via the pam tool as follows:</p>
+<div class="highlight"><pre><span></span>pam -E cat.par -e cF *.F
+</pre></div>
+
+
+<p>These “corrected” files are then scrunched in time:</p>
+<div class="highlight"><pre><span></span>pam -e cFT -T *.cF
+</pre></div>
+
+
+<p>From here we run the pat tool again, but using the corrected <code>*clean.cFT</code> files.</p>
+<h2>Inspecting the timing residuals</h2>
+<p>We open the timing residuals in an X11 window by using the following <code>tempo2</code> command:</p>
+<div class="highlight"><pre><span></span>tempo2 -gr plk -f name.par name.tim -nofit -npsr <span class="m">1</span>
+</pre></div>
+
+
+<p>There’s a number of check-boxes along the top of the GUI you can choose to assist in fitting the data (e.g RA, DEC, F, F0, etc...), and you can change what is plotted on the x/y-axes by checking/unchecking the boxes to the left of the plot.</p>
+<p>Any obvious outliers in the resulting timing residual plot can be deleted by zooming in on them by pressing the <code>z</code> key and drawing a box around them, pressing the <code>o</code> key to highlight the points and then pressing <code>ctrl d</code> to delete them. Alternatively, scrolling in with the mouse wheel will also get rid of them (but be careful to not overdo it with this method).</p>
+<p>We also want to get rid of any points with very large TOA errors (likely due to low SNR). We can remove these by changing the x-axis to TOA error and removing these points in the same was as the outliers from before.</p>
+<p>Having gotten rid of these points, we can then re-fit the residuals by pressing the <code>REFIT</code> button.</p>
+<p>In the most ideal scenario, the timing residuals will be very small and largely scattered around zero. For this pulsar we can then also fit for RA, DEC, F0 and F1. From this fit, we can then make new <code>.tim</code> and <code>.par</code> files directly from <code>tempo2</code>.</p>
+<p>Note that not all pulsars can be fit for these parameters, those in binaries tend to have many other parameters which can be fit for (but shouldn’t be fit for in practice!). Pulsars with very few points over a short observation span cannot be accurately localised, so fitting for RA and Dec doesn’t make much sense. The same with fitting for F1 if there is number of observations is low.
+From this fit, we can then make new <code>.tim</code> and <code>.par</code> files directly from <code>tempo2</code> by clicking the New par and New tim buttons.</p>
+<h2>Combining archives into one</h2>
+<p>Sometimes the provided standard is not an accurate model of the pulse profile, or there may not be a standard template to begin with. To make a standard from the data, we generally want to use either an observation with a very high SNR, or a stack of observations to artificially boost the SNR.</p>
+<p>Using <code>cat ml.tim</code>, we can see all of the individual archives that went into making the .tim file. A more detailed version of this can be viewed by using:</p>
+<div class="highlight"><pre><span></span>cat name.tim <span class="p">|</span> grep mo <span class="p">|</span> awk ‘<span class="o">{</span>print <span class="nv">$1</span><span class="o">}</span>’
+</pre></div>
+
+
+<p>To combine all of these archives into to make single pulse profile (the <code>grand.FT</code> data file), we use the psradd program as follows:</p>
+<div class="highlight"><pre><span></span>psradd -o grand.FT -E name.par <span class="sb">`</span>cat ml.tim <span class="p">|</span> grep -v C <span class="p">|</span> awk ‘<span class="o">{</span>print <span class="nv">$1</span><span class="o">}</span>’ <span class="p">|</span> grep <span class="m">20</span><span class="sb">`</span> -F
+</pre></div>
+
+
+<p>We can then visually inspect the combined pulse profile using <code>pdmp grand.FT</code> or by using <code>pav -DFT grand.FT</code> to plot the spectrogram. If it looks like a good match to the rest of the observations, we can then move on to processing it.
+We then scrunch grand.ar in time by using pam:</p>
+<div class="highlight"><pre><span></span>pam -m -T grand.FT
+</pre></div>
+
+
+<p>Now we can make the standard by using the package:</p>
+<div class="highlight"><pre><span></span>pas grand.FT /xs
+</pre></div>
+
+
+<p>Once we have our new standard, we can apply it to the observations using the pat tool as before:</p>
+<div class="highlight"><pre><span></span>pat -A FDM -s *.std -f tempo2 *.clean.FT &gt; name.tim
+</pre></div>
+
+
+<p>And then using <code>tempo2</code> to inspect the residuals.</p>
+        </div>
+    </section>
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+<!-- Sidebar -->
+<section class="well well-sm">
+  <ul class="list-group list-group-flush">
+
+<!-- Sidebar/Social -->
+<li class="list-group-item">
+  <h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+  <ul class="list-group" id="social">
+    <li class="list-group-item"><a href="mailto:marcus.e.lower@gmail.com"><i class="fa fa-envelope fa-lg"></i> Email</a></li>
+    <li class="list-group-item"><a href="http://twitter.com/astromelow"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+    <li class="list-group-item"><a href="https://github.com/mlower"><i class="fa fa-github-square fa-lg"></i> Github</a></li>
+    <li class="list-group-item"><a href="https://git.ligo.org/lscsoft/bilby"><i class="fa fa-gitlab fa-lg"></i> Gitlab</a></li>
+  </ul>
+</li>
+<!-- End Sidebar/Social -->
+
+<!-- Sidebar/Links -->
+<li class="list-group-item">
+  <h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+  <ul class="list-group" id="links">
+    <li class="list-group-item">
+      <a href="https://scholar.google.com.au/citations?user=UwVyAQ4AAAAJ&hl=en&authuser=1" target="_blank">Google scholar</a>
+    </li>
+    <li class="list-group-item">
+      <a href="https://orcid.org/0000-0001-9208-0009" target="_blank">ORCID</a>
+    </li>
+  </ul>
+</li>
+<!-- End Sidebar/Links -->
+  </ul>
+</section>
+<!-- End Sidebar -->            </aside>
+        </div>
+    </div>
+</div>
+<!-- End Content Container -->
+
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy;  Marcus Lower
+            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="../theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="../theme/js/respond.min.js"></script>
+
+
+    <script src="../theme/js/bodypadding.js"></script>
+
+
+</body>
+</html>
