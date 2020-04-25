@@ -80,7 +80,7 @@ a, a:hover {
 
 .entry-content a {
     text-decoration: none;
-    border-bottom: 1px dotted;
+    color: #0059ad; 
 }
 
 .entry-content a:hover {
