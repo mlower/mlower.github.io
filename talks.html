@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Marcus Lower | Astrophysicist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sidebar-bg: #0b0f1e;
+  --sidebar-border: #1e2740;
+  --sidebar-text: #cbd5e1;
+  --sidebar-muted: #64748b;
+  --sidebar-accent: #f0a83a;
+  --sidebar-link: #7eb8f7;
+  --page-bg: #f8f9fc;
+  --content-bg: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --accent-gold: #d97706;
+  --accent-gold-light: #fffbeb;
+  --nav-active: #1e293b;
+  --tag-bg: #f1f5f9;
+  --nav-bg: #ffffff;
+  --sidebar-width: 265px;
+  --transition-theme: background 0.0s, color 0.0s, border-color 0.0s;
+}
+
+html.dark {
+  --page-bg: #0b0f1e;
+  --content-bg: #111827;
+  --nav-bg: #0b0f1e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #4e5a6e;
+  --border: #252b3b;
+  --accent: #5b9cf6;
+  --accent-light: #1a2540;
+  --accent-gold: #f0a83a;
+  --accent-gold-light: #1e1708;
+  --nav-active: #e2e8f0;
+  --tag-bg: #1e2435;
+  --sidebar-bg: #080b14;
+  --sidebar-border: #161c30;
+  --sidebar-muted: #4e5a6e;
+}
+
+html { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; }
+body { display: flex; flex-direction: column; min-height: 100vh; background: var(--page-bg); color: var(--text-primary); transition: var(--transition-theme); }
+
+/* ── TOP NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.25rem;
+  height: 52px;
+  transition: var(--transition-theme);
+}
+.nav-brand { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.01em; }
+.nav-links { display: flex; gap: 0; }
+.nav-links a {
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  text-decoration: none; padding: 0 14px; height: 52px;
+  display: flex; align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── LAYOUT ── */
+.wrapper {
+  display: flex;
+  flex: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  position: sticky;
+  top: 15px;
+  height: calc(120vh - 52px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+#stars-canvas {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.sidebar-inner { position: relative; z-index: 1; }
+
+.avatar-wrap { text-align: center; margin-bottom: 20px; }
+.avatar-img {
+  width: 180px; height: 180px; border-radius: 50%;
+  border: 2px solid var(--sidebar-border);
+  object-fit: cover; display: block;
+  margin: 0 auto 12px;
+}
+.sidebar-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px; font-weight: 600; color: #e2e8f0;
+  line-height: 1.25;
+}
+.sidebar-title { font-size: 12.5px; color: var(--sidebar-muted); margin-top: 4px; line-height: 1.4; }
+.sidebar-inst { font-size: 12.5px; color: var(--sidebar-accent); margin-top: 3px; font-weight: 500; }
+
+.sidebar-divider { border: none; border-top: 1px solid var(--sidebar-border); margin: 16px 0; }
+
+.sidebar-section { margin-bottom: 18px; }
+.sidebar-section-label {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--sidebar-muted); margin-bottom: 10px; font-weight: 600;
+}
+.sidebar-info { display: flex; flex-direction: column; gap: 8px; }
+.sidebar-info a, .sidebar-info span {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--sidebar-text);
+  text-decoration: none; transition: color 0.15s;
+}
+.sidebar-info a:hover { color: var(--sidebar-link); }
+.icon-wrap {
+  width: 18px; height: 18px; min-width: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.icon-wrap svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-wrap img { width: 15px; height: 15px; display: block; object-fit: contain; }
+
+.expertise-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.etag {
+  font-size: 11px; padding: 3px 8px; border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8;
+}
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  padding: 36px 40px;
+  max-width: 800px;
+}
+
+.section { margin-bottom: 44px; }
+.section-heading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px; font-weight: 600; color: var(--text-primary);
+  letter-spacing: -0.02em; margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+/* ── BIO ── */
+.bio-text { font-size: 15px; line-height: 1.75; color: var(--text-secondary); }
+.bio-text p + p { margin-top: 14px; }
+.bio-text a { color: var(--accent); text-decoration: none; }
+.bio-text a:hover { text-decoration: underline; }
+
+/* ── TALKS ── */
+.talk-list { display: flex; flex-direction: column; gap: 0; }
+.talk-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.talk-item:last-child { border-bottom: none; }
+.talk-meta { min-width: 90px; }
+.talk-date { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.talk-venue { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+.talk-body { flex: 1; }
+.talk-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; line-height: 1.4; }
+.talk-conf { font-size: 13px; color: var(--text-secondary); }
+.talk-loc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.talk-badge {
+  display: inline-block; font-size: 10.5px; font-weight: 600;
+  padding: 2px 7px; border-radius: 20px; margin-top: 6px;
+  background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+}
+.talk-badge.invited { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+html.dark .talk-badge { background: #1a2540; color: #7eb8f7; border-color: #2d4a7a; }
+html.dark .talk-badge.invited { background: #0f2418; color: #4ade80; border-color: #166534; }
+
+/* ── PAGE TABS ── */
+.page-content { display: none; }
+.page-content.active { display: block; }
+
+/* ── FOOTER ── */
+footer {
+  background: #0b0f1e; color: #475569;
+  text-align: center; padding: 18px;
+  font-size: 12.5px; border-top: 1px solid #1e2740;
+}
+footer a { color: #7eb8f7; text-decoration: none; }
+html.dark footer { background: #080b14; border-top-color: #161c30; }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 8px;
+  background: none; border: 1px solid var(--border);
+  cursor: pointer; color: var(--text-secondary);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { background: var(--tag-bg); color: var(--text-primary); }
+.theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 820px) {
+  .wrapper { flex-direction: column; }
+  aside { position: static; width: 100%; min-width: unset; height: auto; flex-direction: row; flex-wrap: wrap; padding: 20px; }
+  main { padding: 20px; }
+  nav { flex-wrap: wrap; height: auto; padding: 8px 12px; gap: 4px; }
+  .nav-links { flex-wrap: wrap; gap: 0; }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav>
+  <a href="index.html" class="nav-brand">Marcus Lower</a>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <div class="nav-links">
+      <a href="index.html" onclick="return showPage('about',this)">About</a>
+      <a href="research.html" onclick="return showPage('research',this)">My Research</a>
+      <a href="collaborations.html" onclick="return showPage('collaborations',this)">Collaborations</a>
+      <a href="publications.html" onclick="return showPage('publications',this)">Publications</a>
+      <a href="software.html" onclick="return showPage('software',this)">Software</a>
+      <a href="talks.html" class="active" onclick="return showPage('talks',this)">Talks</a>
+      <a href="group.html" onclick="return showPage('group',this)">Group</a>
+      <a href="cv.html" onclick="return showPage('cv',this)">CV</a>
+      <!-- <a href="#" onclick="return showPage('contact',this)">Contact</a> -->
+    </div>
+    <button class="theme-toggle" id="theme-btn" aria-label="Toggle dark mode" onclick="toggleTheme()">
+      <svg id="icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="wrapper">
+  <!-- SIDEBAR -->
+  <aside style="position:relative;">
+    <canvas id="stars-canvas"></canvas>
+    <div class="sidebar-inner">
+      <div class="avatar-wrap">
+        <img src="Photos/bio.jpg" alt="Dr. Marcus Lower" class="avatar-img" />
+        <div class="sidebar-name">Dr. Marcus Lower</div>
+        <div class="sidebar-title">ARC DECRA Fellow | Astrophysicist</div>
+        <div class="sidebar-inst"><a href="https://www.swinburne.edu.au/" style="color: #f0a83a;">Swinburne University of Technology</a></div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Contact</div>
+        <div class="sidebar-info">
+          <a href="mailto:mlower@swin.edu.au">
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg></span>
+            mlower@swin.edu.au
+          </a>
+          <a href="https://www.github.com/mlower">
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span>
+            github.com/mlower
+          </a>
+          <a href="https://www.linkedin.com/in/marcus-lower-864a40272/">
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+            LinkedIn
+          </a>
+          <a href="https://bsky.app/profile/astromelow.bsky.social" target="_blank" rel="noopener">
+                <span class="icon-wrap">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Bluesky_Logo.svg" alt="Bluesky" />
+                </span>
+              Bluesky
+            </a>
+        </div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Location</div>
+        <div class="sidebar-info">
+          <span>
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
+            <a href="https://en.wikipedia.org/wiki/Melbourne">Melbourne, VIC, Australia</a>
+          </span>
+        </div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Research Interests</div>
+        <div class="expertise-tags">
+          <span class="etag">Pulsars</span>
+          <span class="etag">Magnetars</span>
+          <span class="etag">Polarimetry</span>
+          <span class="etag">Fast radio bursts</span>
+          <span class="etag">Relativity</span>
+          <span class="etag">Gravitational waves</span>
+        </div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Metrics</div>
+        <div class="sidebar-info" style="gap:6px;">
+          <span style="justify-content:space-between;"><span>Publications</span><span style="color:#f0a83a;font-weight:600;">92</span></span>
+          <span style="justify-content:space-between;"><span>Citations</span><span style="color:#f0a83a;font-weight:600;">17,231</span></span>
+          <span style="justify-content:space-between;"><span>h-index</span><span style="color:#f0a83a;font-weight:600;">45</span></span>
+          <a href="https://ui.adsabs.harvard.edu/search/filter_property_fq_property=AND&filter_property_fq_property=property%3A%22refereed%22&fq=%7B!type%3Daqp%20v%3D%24fq_property%7D&fq_property=(property%3A%22refereed%22)&p_=0&q=%20author%3A%22Lower%2C%20Marcus%20E%22&sort=date%20desc%2C%20bibcode%20desc" style="color:var(--sidebar-link);font-size:11.5px;justify-content:flex-start;">NASA/ADS ↗</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- TALKS -->
+    <div id="page-talks" class="page-content active">
+      <div class="section">
+        <h1 class="section-heading">Talks &amp; presentations</h1>
+        <p>Below is a list of talks and presentations that I have given throughout my research career.</p>
+        <br>
+        <br>
+        <div class="talk-list">
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Nov 2025</div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Magnetars: The magnetic monsters of the neutron star zoo</div>
+              <div class="talk-conf">Research School of Astronomy and Astrophysics colloquium</div>
+              <div class="talk-loc">The Australian National University, Canberra, Australia</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Sep 2025</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Jewels in the pulsar casket</div>
+              <div class="talk-conf">Pulsar 2025</div>
+              <div class="talk-loc">Geremeas, Italy</div>
+              <span class="talk-badge invited">Invited</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Aug 2025</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">The most extreme pulsars in the Galaxy and their links to FRB progenitors</div>
+              <div class="talk-conf">Dynamic Radio Skies 2025</div>
+              <div class="talk-loc">University of Sydney, Sydney, Australia,</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jul 2025</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Transient FRB-like emission from an extraordinary radio-loud magnetar</div>
+              <div class="talk-conf">FRB 2025</div>
+              <div class="talk-loc">Montreal, Canada</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jun 2025</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Shining a light through a neutron star magnetosphere</div>
+              <div class="talk-conf">A New era in astrophysics: Preparing for early science with the SKAO</div>
+              <div class="talk-loc">Görlitz, Germany</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Mar 2025</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">The long- and short-term rotational evolution of radio pulsars</div>
+              <div class="talk-conf">Astrophysics Colloquium</div>
+              <div class="talk-loc">University of Melbourne, Melbourne, Australia</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Aug 2024</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Untangling the magnetic fields of radio pulsars</div>
+              <div class="talk-conf">CAS Astrophysics Colloquium</div>
+              <div class="talk-loc">Swinburne University of Technology, Melbourne, Australia,</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jul 2024</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">The irregular spin-down evolution of radio pulsars</div>
+              <div class="talk-conf">Physics and Astronomy Seminar</div>
+              <div class="talk-loc">Monash University, Melbourne, Australia,</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+          </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jun 2024</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Discovery of the first millisecond pulsar in the Galactic Centre</div>
+              <div class="talk-conf">2024 Astronomical Society of Australia ASM</div>
+              <div class="talk-loc">Held online</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Mar 2024</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">A MeerKAT perspective of the double pulsar eclipses: precession, predictions and polarimetry</div>
+              <div class="talk-conf">CGCA Seminar (virtual)</div>
+              <div class="talk-loc">University of Wisconsin-Milwaukee, Milwaukee, USA</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+        </div>
+
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Feb 2024</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">A MeerKAT view of the double pulsar eclipses: precession, predictions and polarimetry</div>
+              <div class="talk-conf">MeerKAT@5</div>
+              <div class="talk-loc">Stellenbosch, South Africa</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+
+          <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Oct 2023</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Pulsar timing with the UTMOST East-West array</div>
+              <div class="talk-conf">Molonglo Symposium</div>
+              <div class="talk-loc">University of Sydney, Sydney, Australia</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jul 2023</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Rocks around the clock? A case study of pulsar-asteroid interactions with PSR J0738-4042</div>
+              <div class="talk-conf">2023 Astronomical Society of Australia ASM</div>
+              <div class="talk-loc">Macquarie University, Sydney, Australia</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jun 2023</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Faraday conversion in the magnetosphere of a magnetar</div>
+              <div class="talk-conf">JBCA Seminar</div>
+              <div class="talk-loc">University of Manchester, Manchester, UK</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jun 2023</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">How do young pulsars spin down?</div>
+              <div class="talk-conf">Timing and imaging of compact sources with SKA pathfinders</div>
+              <div class="talk-loc">Kerastari, Greece</div>
+              <span class="talk-badge invited">Invited</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Dec 2022</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">The Parkes magnetar monitoring programme</div>
+              <div class="talk-conf">MQAAAstro Seminar</div>
+              <div class="talk-loc">Macquarie University, Sydney, Australia</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Nov 2022</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Magnetars@Murriyang</div>
+              <div class="talk-conf">2022 Australasian (Orange) Pulsar Workshop</div>
+              <div class="talk-loc">Parkes Observatory, Australia</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Aug 2022</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Radio-loud magnetars as Galactic fast radio burst analogues</div>
+              <div class="talk-conf">IAU Symposium 369, IAU General Assembly 2022</div>
+              <div class="talk-loc">Busan, South Korea</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jul 2022</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Untangling the twisted polarised emission of a radio-loud magnetar</div>
+              <div class="talk-conf">2022 Astronomical Society of Australia ASM</div>
+              <div class="talk-loc">University of Tasmania, Hobart, Australia</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Mar 2022</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">A radio-loud magnetar with an identity crisis</div>
+              <div class="talk-conf">ATNF Colloquium,</div>
+              <div class="talk-loc">CSIRO Marsfield, Sydney, Australia</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Feb 2022</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Modelling radio birefringence in neutron star magnetospheres</div>
+              <div class="talk-conf">ANITA 2022 workshop</div>
+              <div class="talk-loc">Macquarie University, Sydney, Australia</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jul 2021</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Timing an invisible neutron star and testing General Relativity via the eclipses of its pulsar companion</div>
+              <div class="talk-conf">14th Edoardo Amaldi conference on gravitational waves</div>
+              <div class="talk-loc">Held online</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jun 2021</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">A MeerKAT's perspective of the Double Pulsar eclipses</div>
+              <div class="talk-conf">11th IPTA scientific meeting</div>
+              <div class="talk-loc">Held online</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jul 2020</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">The radio magnetar XTE J1810-197: A Galactic FRB analogue?</div>
+              <div class="talk-conf">2020 Astronomical Society of Australia ASM</div>
+              <div class="talk-loc">Held online</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Feb 2020</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Massive scale pulsar timing with the Molonglo Observatory Synthesis Telescope</div>
+              <div class="talk-conf">ATNF Colloquium</div>
+              <div class="talk-loc">CSIRO Marsfield, Sydney, Australia</div>
+              <span class="talk-badge invited">Colloquium</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Jun 2019</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">The UTMOST pulsar timing programme</div>
+              <div class="talk-conf">10th IPTA scientific meeting</div>
+              <div class="talk-loc">Pune, India</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Feb 2019</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Measuring rotational instabilities in pulsars with the Molonglo telescope</div>
+              <div class="talk-conf">ANITA 2019 workshop</div>
+              <div class="talk-loc">Swinburne University of Technology, Melbourne, Australia</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+         <div class="talk-item">
+            <div class="talk-meta">
+              <div class="talk-date">Feb 2018</div>
+              <div class="talk-venue"></div>
+            </div>
+            <div class="talk-body">
+              <div class="talk-title">Distinguishing eccentricity in binary black hole mergers with aLIGO</div>
+              <div class="talk-conf">ANITA 2018 workshop</div>
+              <div class="talk-loc">ICRAR Curtin University, Perth, Australia</div>
+              <span class="talk-badge">Contributed</span>
+            </div>
+        </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p>Dr. Marcus Lower · Last updated June 2026 · Built with <a href="https://academicpages.github.io/">Academicpages</a></p>
+</footer>
+
+<script>
+function showPage(id, el) {
+  document.querySelectorAll('.page-content').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  return false;
+}
+
+function applyTheme(dark) {
+  document.documentElement.classList.toggle('dark', dark);
+  var sun = document.getElementById('icon-sun');
+  var moon = document.getElementById('icon-moon');
+  if (sun && moon) {
+    sun.style.display = dark ? 'block' : 'none';
+    moon.style.display = dark ? 'none' : 'block';
+  }
+}
+
+function toggleTheme() {
+  var isDark = document.documentElement.classList.contains('dark');
+  var next = !isDark;
+  applyTheme(next);
+  try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch(e) {}
+}
+
+(function() {
+  var saved;
+  try { saved = localStorage.getItem('theme'); } catch(e) {}
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved === 'dark' || (!saved && prefersDark));
+})();
+
+// Animated star field on sidebar canvas
+(function() {
+  var canvas = document.getElementById('stars-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var stars = [], W, H, raf;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function initStars(n) {
+    stars = [];
+    for (var i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.2,
+        alpha: Math.random() * 0.7 + 0.1,
+        speed: Math.random() * 0.0000017 + 0.0000005,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(function(s) {
+      var a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed * 1000 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(200, 220, 255, ' + a + ')';
+      ctx.fill();
+    });
+    raf = requestAnimationFrame(draw);
+  }
+
+  function start() {
+    resize();
+    initStars(120);
+    if (raf) cancelAnimationFrame(raf);
+    requestAnimationFrame(draw);
+  }
+
+  start();
+  window.addEventListener('resize', function() { start(); });
+})();
+</script>
+
+</body>
+</html>

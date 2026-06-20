@@ -1,174 +1,597 @@
 <!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<html lang="en">
 <head>
-    <title>About - Marcus Lower</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Marcus Lower | Astrophysicist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+:root {
+  --sidebar-bg: #0b0f1e;
+  --sidebar-border: #1e2740;
+  --sidebar-text: #cbd5e1;
+  --sidebar-muted: #64748b;
+  --sidebar-accent: #f0a83a;
+  --sidebar-link: #7eb8f7;
+  --page-bg: #f8f9fc;
+  --content-bg: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --accent-gold: #d97706;
+  --accent-gold-light: #fffbeb;
+  --nav-active: #1e293b;
+  --tag-bg: #f1f5f9;
+  --nav-bg: #ffffff;
+  --sidebar-width: 265px;
+  --transition-theme: background 0.0s, color 0.0s, border-color 0.0s;
+}
 
-    <link href="images/favicon.png" rel="icon">
+html.dark {
+  --page-bg: #0b0f1e;
+  --content-bg: #111827;
+  --nav-bg: #0b0f1e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #4e5a6e;
+  --border: #252b3b;
+  --accent: #5b9cf6;
+  --accent-light: #1a2540;
+  --accent-gold: #f0a83a;
+  --accent-gold-light: #1e1708;
+  --nav-active: #e2e8f0;
+  --tag-bg: #1e2435;
+  --sidebar-bg: #080b14;
+  --sidebar-border: #161c30;
+  --sidebar-muted: #4e5a6e;
+}
 
-<link rel="canonical" href="index.html">
+html { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; }
+body { display: flex; flex-direction: column; min-height: 100vh; background: var(--page-bg); color: var(--text-primary); transition: var(--transition-theme); }
 
-        <meta name="author" content="Marcus Lower" />
-        <meta name="description" content=""/>
+/* ── TOP NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.25rem;
+  height: 52px;
+  transition: var(--transition-theme);
+}
+.nav-brand { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.01em; }
+.nav-links { display: flex; gap: 0; }
+.nav-links a {
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  text-decoration: none; padding: 0 14px; height: 52px;
+  display: flex; align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-    <meta property="og:site_name" content="Marcus Lower" />
-    <meta property="og:type" content="article"/>
-    <meta property="og:title" content="About"/>
-    <meta property="og:url" content="./"/>
-    <meta property="og:description" content=""/>
+/* ── LAYOUT ── */
+.wrapper {
+  display: flex;
+  flex: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
 
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  position: sticky;
+  top: 15px;
+  height: calc(120vh - 52px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
 
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="theme/css/bootstrap.min.css" type="text/css"/>
-    <link href="theme/css/font-awesome.min.css" rel="stylesheet">
-    <link href="theme/css/pygments/monokai.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" type="text/css"/>
+#stars-canvas {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.sidebar-inner { position: relative; z-index: 1; }
 
-        <link href="feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Marcus Lower ATOM Feed"/>
+.avatar-wrap { text-align: center; margin-bottom: 20px; }
+.avatar-img {
+  width: 180px; height: 180px; border-radius: 50%;
+  border: 2px solid var(--sidebar-border);
+  object-fit: cover; display: block;
+  margin: 0 auto 12px;
+}
+.sidebar-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px; font-weight: 600; color: #e2e8f0;
+  line-height: 1.25;
+}
+.sidebar-title { font-size: 12.5px; color: var(--sidebar-muted); margin-top: 4px; line-height: 1.4; }
+.sidebar-inst { font-size: 12.5px; color: var(--sidebar-accent); margin-top: 3px; font-weight: 500; }
 
+.sidebar-divider { border: none; border-top: 1px solid var(--sidebar-border); margin: 16px 0; }
+
+.sidebar-section { margin-bottom: 18px; }
+.sidebar-section-label {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--sidebar-muted); margin-bottom: 10px; font-weight: 600;
+}
+.sidebar-info { display: flex; flex-direction: column; gap: 8px; }
+.sidebar-info a, .sidebar-info span {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--sidebar-text);
+  text-decoration: none; transition: color 0.15s;
+}
+.sidebar-info a:hover { color: var(--sidebar-link); }
+.icon-wrap {
+  width: 18px; height: 18px; min-width: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.icon-wrap svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-wrap img { width: 15px; height: 15px; display: block; object-fit: contain; }
+
+.expertise-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.etag {
+  font-size: 11px; padding: 3px 8px; border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8;
+}
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  padding: 36px 40px;
+  max-width: 800px;
+}
+
+.section { margin-bottom: 44px; }
+.section-heading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px; font-weight: 600; color: var(--text-primary);
+  letter-spacing: -0.02em; margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+/* ── BIO ── */
+.bio-text { font-size: 15px; line-height: 1.75; color: var(--text-secondary); }
+.bio-text p + p { margin-top: 14px; }
+.bio-text a { color: var(--accent); text-decoration: none; }
+.bio-text a:hover { text-decoration: underline; }
+
+.news-block {
+  background: var(--accent-gold-light);
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin-top: 20px;
+}
+.news-block .news-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 8px; }
+.news-item { display: flex; gap: 10px; align-items: baseline; font-size: 13px; color: var(--text-secondary); margin-bottom: 5px; }
+.news-date { font-size: 11.5px; color: var(--accent-gold); font-weight: 600; min-width: 70px; }
+
+/* ── PUBLICATIONS ── */
+.pub-list { display: flex; flex-direction: column; gap: 20px; }
+.pub-card {
+  background: var(--content-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  transition: border-color 0.15s;
+}
+.pub-card:hover { border-color: #94a3b8; }
+html.dark .pub-card:hover { border-color: #475569; }
+.pub-top { display: flex; gap: 12px; align-items: flex-start; }
+.pub-year-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px; font-weight: 700;
+  background: var(--nav-active); color: white;
+  padding: 3px 9px; border-radius: 20px;
+  min-width: 50px; text-align: center; flex-shrink: 0; margin-top: 2px;
+}
+html.dark .pub-year-badge { background: #334155; }
+.pub-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.4; margin-bottom: 5px;
+}
+.pub-authors { font-size: 13px; color: var(--text-secondary); margin-bottom: 5px; }
+.pub-authors strong { color: var(--text-primary); }
+.pub-journal { font-size: 13px; color: var(--text-muted); font-style: italic; }
+.pub-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.pub-tag {
+  font-size: 11px; padding: 2px 8px; border-radius: 20px;
+  background: var(--tag-bg); color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.pub-links { display: flex; gap: 8px; margin-top: 12px; }
+.pub-link {
+  font-size: 12px; font-weight: 500;
+  padding: 4px 10px; border-radius: 6px;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: background 0.12s;
+}
+.pub-link:hover { background: var(--tag-bg); }
+.pub-link.primary {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.pub-link.primary:hover { background: #1d4ed8; }
+
+/* ── TALKS ── */
+.talk-list { display: flex; flex-direction: column; gap: 0; }
+.talk-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.talk-item:last-child { border-bottom: none; }
+.talk-meta { min-width: 90px; }
+.talk-date { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.talk-venue { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+.talk-body { flex: 1; }
+.talk-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; line-height: 1.4; }
+.talk-conf { font-size: 13px; color: var(--text-secondary); }
+.talk-loc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.talk-badge {
+  display: inline-block; font-size: 10.5px; font-weight: 600;
+  padding: 2px 7px; border-radius: 20px; margin-top: 6px;
+  background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+}
+.talk-badge.invited { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+html.dark .talk-badge { background: #1a2540; color: #7eb8f7; border-color: #2d4a7a; }
+html.dark .talk-badge.invited { background: #0f2418; color: #4ade80; border-color: #166534; }
+
+/* ── CV ── */
+.cv-section { margin-bottom: 28px; }
+.cv-section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 12px;
+}
+.cv-entries { display: flex; flex-direction: column; gap: 16px; }
+.cv-entry { display: flex; gap: 16px; }
+.cv-year { min-width: 80px; font-size: 13px; color: var(--text-muted); font-weight: 600; padding-top: 1px; }
+.cv-role { font-size: 14.5px; font-weight: 600; color: var(--text-primary); }
+.cv-org { font-size: 13px; color: var(--accent); margin-top: 2px; }
+.cv-desc { font-size: 13px; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
+
+/* ── CONTACT ── */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.contact-card {
+  background: var(--content-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.contact-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--accent-light);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.contact-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.contact-label { font-size: 11.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+.contact-value { font-size: 13.5px; color: var(--text-secondary); }
+
+/* ── PAGE TABS ── */
+.page-content { display: none; }
+.page-content.active { display: block; }
+
+/* ── FOOTER ── */
+footer {
+  background: #0b0f1e; color: #475569;
+  text-align: center; padding: 18px;
+  font-size: 12.5px; border-top: 1px solid #1e2740;
+}
+footer a { color: #7eb8f7; text-decoration: none; }
+html.dark footer { background: #080b14; border-top-color: #161c30; }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 8px;
+  background: none; border: 1px solid var(--border);
+  cursor: pointer; color: var(--text-secondary);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { background: var(--tag-bg); color: var(--text-primary); }
+.theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 820px) {
+  .wrapper { flex-direction: column; }
+  aside { position: static; width: 100%; min-width: unset; height: auto; flex-direction: row; flex-wrap: wrap; padding: 20px; }
+  main { padding: 20px; }
+  nav { flex-wrap: wrap; height: auto; padding: 8px 12px; gap: 4px; }
+  .nav-links { flex-wrap: wrap; gap: 0; }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="index.html" class="navbar-brand">
-Marcus Lower            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                         <li><a href="pages/my-research.html">
-                             My Research
-                          </a></li>
-                         <li><a href="pages/cv.html">
-                             CV
-                          </a></li>
-                         <li><a href="pages/publications.html">
-                             Publications
-                          </a></li>
-                         <li><a href="pages/about.html">
-                             About Me
-                          </a></li>
-                         <li><a href="pages/resources.html">
-                             Resources
-                          </a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
+<!-- TOP NAV -->
+<nav>
+  <a href="index.html" class="nav-brand">Marcus Lower</a>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <div class="nav-links">
+      <a href="index.html" class="active" onclick="return showPage('about',this)">About</a>
+      <a href="research.html" onclick="return showPage('research',this)">My Research</a>
+      <a href="collaborations.html" onclick="return showPage('collaborations',this)">Collaborations</a>
+      <a href="publications.html" onclick="return showPage('publications',this)">Publications</a>
+      <a href="software.html" onclick="return showPage('software',this)">Software</a>
+      <a href="talks.html" onclick="return showPage('talks',this)">Talks</a>
+      <a href="group.html" onclick="return showPage('group',this)">Group</a>
+      <a href="cv.html" onclick="return showPage('cv',this)">CV</a>
+      <!-- <a href="#" onclick="return showPage('contact',this)">Contact</a> -->
     </div>
-</div> <!-- /.navbar -->
+    <button class="theme-toggle" id="theme-btn" aria-label="Toggle dark mode" onclick="toggleTheme()">
+      <svg id="icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
 
-<!-- Banner -->
-<style>
-	#banner{
-	    background-image:url("images/Background.jpg");
-	}
-</style>
+<div class="wrapper">
+  <!-- SIDEBAR -->
+  <aside style="position:relative;">
+    <canvas id="stars-canvas"></canvas>
+    <div class="sidebar-inner">
+      <div class="avatar-wrap">
+        <img src="Photos/bio.jpg" alt="Dr. Marcus Lower" class="avatar-img" />
+        <div class="sidebar-name">Dr. Marcus Lower</div>
+        <div class="sidebar-title">ARC DECRA Fellow | Astrophysicist</div>
+        <div class="sidebar-inst"><a href="https://www.swinburne.edu.au/" style="color: #f0a83a;">Swinburne University of Technology</a></div>
+      </div>
 
-<div id="banner">
-	<div class="container">
-		<div class="copy">
-			<h1>Dr. Marcus Lower</h1>
-				<p class="intro"> Astrophysicist </p>
-		</div>
-	</div>
-</div><!-- End Banner -->
+      <hr class="sidebar-divider">
 
-<!-- Content Container -->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-9">
-    <section id="content" class="body">
-        <h1 class="entry-title"></h1>
-
-        <div class="entry-content">
-            <p><img src="./images/bio_photo.png"
-     alt="photo"
-     style="float: right; margin-left: 15px; margin-bottom: 15px"
-     width="180" /></p>
-
-</p>
-I am an Australian Research Council DECRA Fellow based at Swinburne University's <a href="https://www.swinburne.edu.au/research/centres-groups-clinics/centre-for-astrophysics-supercomputing/">Centre for Astrophysics and Supercomputing</a>.
-My work primarily involves developing and using Bayesian inference techniques to learn more about the properties of pulsars - rotating neutron stars that emit beams of electromagnetic radiation from their magnetic poles - and their links to links to the mysterious fast radio burst (FRB) phenomena. These FRBs are extremely bright, but vanishingly short-lived bursts of radio waves that come from distant galaxies.
-</p>
-</p>  
-I am the priniciple investigator of the Parkes `P574' young pulsar timing project. This multi-decade long project uses Murriyang, the CSIRO 64-m Parkes radio telescope, to monitor 270 energectic 'slow' pulsars.
-</p>
-<p>
-Other interests of mine include follow-up parameter estimation of gravitational-wave events seen by Advanced LIGO and Virgo, and searches for the stochastic gravitational-wave background with pulsar timing arrays.
-</p>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Contact</div>
+        <div class="sidebar-info">
+          <a href="mailto:mlower@swin.edu.au">
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg></span>
+            mlower@swin.edu.au
+          </a>
+          <a href="https://www.github.com/mlower">
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span>
+            github.com/mlower
+          </a>
+          <a href="https://www.linkedin.com/in/marcus-lower-864a40272/">
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+            LinkedIn
+          </a>
+          <a href="https://bsky.app/profile/astromelow.bsky.social" target="_blank" rel="noopener">
+                <span class="icon-wrap">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Bluesky_Logo.svg" alt="Bluesky" />
+                </span>
+              Bluesky
+            </a>
         </div>
-    </section>
-        </div>
-        <div class="col-sm-3" id="sidebar">
-            <aside>
-<!-- Sidebar -->
-<section class="well well-sm">
-  <ul class="list-group list-group-flush">
+      </div>
 
-<!-- Sidebar/Social -->
-<li class="list-group-item">
-  <h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
-  <ul class="list-group" id="social">
-    <li class="list-group-item"><a href="mailto:mlower@swin.edu.au"><i class="fa fa-envelope fa-lg"></i> Email</a></li>
-    <li class="list-group-item"><a href="https://github.com/mlower"><i class="fa fa-github-square fa-lg"></i> Github</a></li>
-  </ul>
-</li>
-<!-- End Sidebar/Social -->
+      <hr class="sidebar-divider">
 
-<!-- Sidebar/Links -->
-<li class="list-group-item">
-  <h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
-  <ul class="list-group" id="links">
-    <li class="list-group-item">
-      <a href="https://scholar.google.com.au/citations?user=UwVyAQ4AAAAJ&hl=en&authuser=1" target="_blank">Google scholar</a>
-    </li>
-    <li class="list-group-item">
-      <a href="https://orcid.org/0000-0001-9208-0009" target="_blank">ORCID</a>
-    </li>
-  </ul>
-</li>
-<!-- End Sidebar/Links -->
-<!-- End Sidebar -->            </aside>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Location</div>
+        <div class="sidebar-info">
+          <span>
+            <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
+            <a href="https://en.wikipedia.org/wiki/Melbourne">Melbourne, VIC, Australia</a>
+          </span>
         </div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Research Interests</div>
+        <div class="expertise-tags">
+          <span class="etag">Pulsars</span>
+          <span class="etag">Magnetars</span>
+          <span class="etag">Polarimetry</span>
+          <span class="etag">Fast radio bursts</span>
+          <span class="etag">Relativity</span>
+          <span class="etag">Gravitational waves</span>
+        </div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Metrics</div>
+        <div class="sidebar-info" style="gap:6px;">
+          <span style="justify-content:space-between;"><span>Publications</span><span style="color:#f0a83a;font-weight:600;">92</span></span>
+          <span style="justify-content:space-between;"><span>Citations</span><span style="color:#f0a83a;font-weight:600;">17,231</span></span>
+          <span style="justify-content:space-between;"><span>h-index</span><span style="color:#f0a83a;font-weight:600;">45</span></span>
+          <a href="https://ui.adsabs.harvard.edu/search/filter_property_fq_property=AND&filter_property_fq_property=property%3A%22refereed%22&fq=%7B!type%3Daqp%20v%3D%24fq_property%7D&fq_property=(property%3A%22refereed%22)&p_=0&q=%20author%3A%22Lower%2C%20Marcus%20E%22&sort=date%20desc%2C%20bibcode%20desc" style="color:var(--sidebar-link);font-size:11.5px;justify-content:flex-start;">NASA/ADS ↗</a>
+        </div>
+      </div>
     </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- ABOUT -->
+    <div id="page-about" class="page-content active">
+      <div class="section">
+        <h1 class="section-heading">About me</h1>
+        <div class="bio-text">
+          <p>I am an Australian Research Council DECRA Fellow at the <a href="https://www.swinburne.edu.au/research/centres-groups-clinics/centre-for-astrophysics-supercomputing/">Centre for Astrophysics and Supercomputing</a> at Swinburne University of Technology. My research sits at the intersection of observational and statistical astrophysics, with a current focus on investigating the links between highly magnetised neutron stars and the mysterious fast radio burst phenomenon.</p>
+          <p>I combine Bayesian inference techniques with data from radio telescopes &mdash; primarily <a href="https://www.csiro.au/en/about/facilities-collections/ATNF/Parkes-radio-telescope-Murriyang">Parkes/Murriyang</a> and <a href="https://www.sarao.ac.za/science/meerkat/">MeerKAT</a> &mdash; to study two kinds of rotating neutron stars known as pulsars and magnetars. These objects emit beams of electromagnetic radiation from their magnetic poles which our telescopes detect as periodic trains of highly polarised radio pulses. I lead the Parkes 'P574' and 'P885' long-term projects, which respectively monitor 270 slow-spinning pulsars and four extremely rare radio-loud magnetars. These projects seek to understand how pulsars and magnetars evolve over their lifetimes, be used as tools to map our Galaxy and test fundamental physics under extreme conditions.</p>
+          <p>Previously, I was a CERC postdoctoral fellow at the Australia Telescope National Facility based out of the CSIRO Marsfield site (2021-2024). I completed my PhD in 2022 at Swinburne University of Technology/CSIRO Space and Astronomy under <a href="https://experts.swinburne.edu.au/231-matthew-bailes">Prof. Matthew Bailes</a>, <a href="https://experts.swinburne.edu.au/3635-ryan-shannon">Prof. Ryan Shannon</a> and <a href="https://people.csiro.au/J/S/Simon-Johnston">Dr. Simon Johnston</a>.
+        </div>
+
+        <div class="news-block">
+          <div class="news-label">Recent news</div>
+          <!-- <div class="news-item"><span class="news-date">Jun 2026</span> .</div> -->
+          <div class="news-item"><span class="news-date">May 2026</span> Contributed talk at the 2026 Orange Pulsar Workshop, Marsfield, Sydney.</div>
+          <div class="news-item"><span class="news-date">Apr 2026</span> Final ATUC meeting as a committee member for three years, Kensington, Perth.</div>
+          <div class="news-item"><span class="news-date">Mar 2026</span> "Transient narrowband radio bursts from 1E 1547.0-5408" submitted to Nature Astronomy.</div>
+          <div class="news-item"><span class="news-date">Feb 2026</span> Contributed talk at the ATNF Futures workshop, Marsfield, Sydney.</div>
+          <div class="news-item"><span class="news-date">Nov 2025</span> Delivered a colloquium at the Australian National University, Canberra.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <!-- <div id="page-contact" class="page-content">
+      <div class="section">
+        <h1 class="section-heading">Contact</h1>
+        <p style="font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px;">I welcome inquiries from prospective graduate students and postdoctoral researchers interested in exoplanet atmospheres, stellar spectroscopy, or JWST data analysis. Please attach a short CV and a paragraph describing your research interests.</p>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Email</div>
+              <div class="contact-value">evasquez@arizona.edu</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Office</div>
+              <div class="contact-value">Steward Observatory, Room 244<br>933 N Cherry Ave, Tucson AZ 85721</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 17z"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Phone</div>
+              <div class="contact-value">+1 (520) 621-0000</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Group</div>
+              <div class="contact-value">Vasquez Exoplanet Atmospheres Group<br>2 postdocs, 4 PhD students</div>
+            </div>
+          </div>
+        </div>
+      </div>
+     </div> -->
+
+  </main>
 </div>
-<!-- End Content Container -->
 
 <footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy;  Marcus Lower
-            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="index.html#">Back to top</a></p></div>
-      </div>
-   </div>
+  <p>Dr. Marcus Lower · Last updated June 2026 · Built with <a href="https://academicpages.github.io/">Academicpages</a></p>
 </footer>
-<script src="theme/js/jquery.min.js"></script>
 
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="theme/js/bootstrap.min.js"></script>
+<script>
+function showPage(id, el) {
+  document.querySelectorAll('.page-content').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  return false;
+}
 
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="theme/js/respond.min.js"></script>
+function applyTheme(dark) {
+  document.documentElement.classList.toggle('dark', dark);
+  var sun = document.getElementById('icon-sun');
+  var moon = document.getElementById('icon-moon');
+  if (sun && moon) {
+    sun.style.display = dark ? 'block' : 'none';
+    moon.style.display = dark ? 'none' : 'block';
+  }
+}
 
+function toggleTheme() {
+  var isDark = document.documentElement.classList.contains('dark');
+  var next = !isDark;
+  applyTheme(next);
+  try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch(e) {}
+}
 
-    <script src="theme/js/bodypadding.js"></script>
+(function() {
+  var saved;
+  try { saved = localStorage.getItem('theme'); } catch(e) {}
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved === 'dark' || (!saved && prefersDark));
+})();
 
+// Animated star field on sidebar canvas
+(function() {
+  var canvas = document.getElementById('stars-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var stars = [], W, H, raf;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function initStars(n) {
+    stars = [];
+    for (var i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.2,
+        alpha: Math.random() * 0.7 + 0.1,
+        speed: Math.random() * 0.0000017 + 0.0000005,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(function(s) {
+      var a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed * 1000 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(200, 220, 255, ' + a + ')';
+      ctx.fill();
+    });
+    raf = requestAnimationFrame(draw);
+  }
+
+  function start() {
+    resize();
+    initStars(120);
+    if (raf) cancelAnimationFrame(raf);
+    requestAnimationFrame(draw);
+  }
+
+  start();
+  window.addEventListener('resize', function() { start(); });
+})();
+</script>
 
 </body>
 </html>

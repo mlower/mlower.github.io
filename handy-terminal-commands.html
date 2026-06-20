@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Content Container -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content" class="body">
+        <h1 class="entry-title">Handy Terminal Commands</h1>
+
+        <div class="entry-content">
+            <h3>Compressing/Unzipping a directory</h3>
+<p>Making a .tar file:</p>
+<div class="highlight"><pre><span></span>tar cf &lt;tar_name&gt;.tar &lt;file_name&gt;
+</pre></div>
+
+
+<p>Zipping the file:</p>
+<div class="highlight"><pre><span></span>gzip &lt;tar_name&gt;.tar
+</pre></div>
+
+
+<p>Unzip a .tar file:</p>
+<div class="highlight"><pre><span></span>tar -xf &lt;tar_name&gt;.tar
+</pre></div>
+
+
+<h3>Sending a file from a remote directory</h3>
+<p>From remote to local:</p>
+<div class="highlight"><pre><span></span>scp name@remote.something.co:/path/to/file/file_name ~/local/path
+</pre></div>
+
+
+<p>From local to remote (have to be ssh'ed to the remote first):</p>
+<div class="highlight"><pre><span></span>scp ~/local/path name@remote.something.co:/path/to/file/file_name
+</pre></div>
+        </div>
+    </section>
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+</body>
+</html>
