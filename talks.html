@@ -67,6 +67,7 @@ nav {
   transition: var(--transition-theme);
 }
 .nav-brand { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.01em; }
+.nav-right { display: flex; align-items: center; gap: 4px; }
 .nav-links { display: flex; gap: 0; }
 .nav-links a {
   font-size: 14px; font-weight: 500; color: var(--text-secondary);
@@ -225,13 +226,53 @@ html.dark footer { background: #080b14; border-top-color: #161c30; }
 .theme-toggle:hover { background: var(--tag-bg); color: var(--text-primary); }
 .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 34px; height: 34px; border-radius: 8px;
+  background: none; border: 1px solid var(--border);
+  cursor: pointer; padding: 0; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.hamburger:hover { background: var(--tag-bg); }
+.hamburger span {
+  display: block; width: 16px; height: 1.5px;
+  background: var(--text-secondary); border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.nav-dropdown {
+  display: none;
+  position: absolute; top: 52px; left: 0; right: 0;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  flex-direction: column;
+  z-index: 99;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.nav-dropdown.open { display: flex; }
+.nav-dropdown a {
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  text-decoration: none; padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s, color 0.12s;
+}
+.nav-dropdown a:last-child { border-bottom: none; }
+.nav-dropdown a:hover { background: var(--tag-bg); color: var(--text-primary); }
+.nav-dropdown a.active { color: var(--accent); background: var(--accent-light); }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 820px) {
-  .wrapper { flex-direction: column; }
-  aside { position: static; width: 100%; min-width: unset; height: auto; flex-direction: row; flex-wrap: wrap; padding: 20px; }
-  main { padding: 20px; }
-  nav { flex-wrap: wrap; height: auto; padding: 8px 12px; gap: 4px; }
-  .nav-links { flex-wrap: wrap; gap: 0; }
+  .wrapper  { flex-direction: column; }
+  aside     { position: static; width: 100%; min-width: unset; height: auto; padding: 20px; }
+  main      { padding: 20px; }
+  nav       { position: relative; }  /* ← new: anchors the dropdown */
+  .nav-links{ display: none; }        /* ← new: hides desktop tabs */
+  .hamburger{ display: flex; }        /* ← new: shows burger button */
   .contact-grid { grid-template-columns: 1fr; }
 }
 </style>
@@ -241,7 +282,7 @@ html.dark footer { background: #080b14; border-top-color: #161c30; }
 <!-- TOP NAV -->
 <nav>
   <a href="index.html" class="nav-brand">Marcus Lower</a>
-  <div style="display:flex;align-items:center;gap:4px;">
+  <div class="nav-right">
     <div class="nav-links">
       <a href="index.html" onclick="return showPage('about',this)">About</a>
       <a href="research.html" onclick="return showPage('research',this)">My Research</a>
@@ -257,8 +298,23 @@ html.dark footer { background: #080b14; border-top-color: #161c30; }
       <svg id="icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
       <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
+    <button class="hamburger" id="hamburger" aria-label="Open menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE DROPDOWN -->
+<div class="nav-dropdown" id="nav-dropdown">
+  <a href="index.html" onclick="return mobileNav('about',this)">About</a>
+  <a href="research.html" onclick="return mobileNav('research',this)">My Research</a>
+  <a href="collaborations.html" onclick="return mobileNav('collaborations',this)">Collaborations</a>
+  <a href="publications.html" onclick="return mobileNav('publications',this)">Publications</a>
+  <a href="software.html" onclick="return mobileNav('software',this)">Software</a>
+  <a href="talks.html" class="active" onclick="return mobileNav('talks',this)">Talks</a>
+  <a href="group.html" onclick="return mobileNav('group',this)">Group</a>
+  <a href="cv.html" onclick="return mobileNav('cv',this)">CV</a>
+</div>
 
 <div class="wrapper">
   <!-- SIDEBAR -->
@@ -727,6 +783,23 @@ html.dark footer { background: #080b14; border-top-color: #161c30; }
 </footer>
 
 <script>
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var dropdown = document.getElementById('nav-dropdown');
+  btn.classList.toggle('open');
+  dropdown.classList.toggle('open');
+}
+
+function mobileNav(id, el) {
+  showPage(id, null);
+  document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
+  document.querySelectorAll('.nav-dropdown a').forEach(function(a) { a.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('nav-dropdown').classList.remove('open');
+  return false;
+}
+
 function showPage(id, el) {
   document.querySelectorAll('.page-content').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('page-' + id).classList.add('active');
